@@ -1,0 +1,21 @@
+replicaCount: 3
+
+image:
+  repository: stasint/simpleapp
+  pullPolicy: Always
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 8080
+  servicePort: 8888
+
+simpleappUrl: "http://simple-app2:8090"
+
+resources:
+  requests:
+    cpu: "125m"
+    memory: "100Mi"
+  limits:
+    cpu: "125m"
+    memory: "200Mi"

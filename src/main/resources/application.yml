@@ -1,0 +1,17 @@
+spring:
+  application:
+  name: simpleapp
+
+simpleapp:
+  url: http://simpleapp2:8090
+
+management:
+  base-path: /actuator
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
