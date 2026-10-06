@@ -1,0 +1,54 @@
+services:
+
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab.local
+    restart: always
+    hostname: gitlab.local
+
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.local:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 22
+
+        registry_external_url 'http://gitlab.local:5050'
+        registry['enable'] = true
+
+    ports:
+      - "8929:8929"
+      - "22:22"
+      - "5050:5050"
+
+    volumes:
+      - ./gitlab/config:/etc/gitlab
+      - ./gitlab/logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+
+    shm_size: "256m"
+
+    networks:
+      - minikube
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+
+    depends_on:
+      - gitlab
+
+    volumes:
+      - ./runner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    networks:
+      - minikube
+
+volumes:
+  gitlab_data:
+  
+networks:
+  minikube:
+    driver: bridge
+    external: true
+    name: minikube
